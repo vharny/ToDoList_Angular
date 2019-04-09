@@ -1,0 +1,114 @@
+<div class="row m-2">
+  <button type="button" class="btn btn-success mr-2" data-toggle="modal" (click)="add()">Ajouter une tâche</button>
+  <div class="btn-group">
+      <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Trier
+      </button>
+      <div class="dropdown-menu" style="cursor: pointer">
+        <a class="dropdown-item" (click)="sort('plus')">Les plus récentes</a>
+        <a class="dropdown-item" (click)="sort('moins')">Les moins récentes</a>
+      </div>
+    </div>
+</div>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Titre</th>
+      <th scope="col">Description</th>
+      <th scope="col">Date Heure Début</th>
+      <th scope="col">Date Heure Fin</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let tache of taches; let position = index;">
+      <td>{{ tache.titre }}</td>
+      <td>{{ tache.description }}</td>
+      <td>{{ tache.dateHeureDebut | date:'dd/MM/yy HH:mm:ss' }}</td>
+      <td>{{ tache.dateHeureFin | date:'dd/MM/yy HH:mm:ss'}}</td>
+      <td>
+        <button type="button" class="btn btn-warning mr-1" (click)="editMode(position)">Modifier</button>
+        <button type="button" class="btn btn-danger" (click)="remove(position)">Terminer</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Modal Ajout -->
+<div class="modal fade" id="ajoutModal" tabindex="-1" role="dialog" aria-labelledby="ajoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ajouter une tâche</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="ajoutForm">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Titre</span>
+            </div>
+            <input formControlName="titre" type="text" class="form-control">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Description</span>
+            </div>
+            <input formControlName="description" type="text" class="form-control">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Date Heure Début</span>
+            </div>
+            <input formControlName="dateHeureDebut" type="datetime-local" class="form-control">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Date Heure Fin</span>
+            </div>
+            <input formControlName="dateHeureFin" type="datetime-local" class="form-control">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button *ngIf="!modeEdit" type="button" class="btn btn-success" [disabled]="!ajoutForm.valid" (click)="addSubmit()">Ajouter</button>
+        <button *ngIf="modeEdit" type="button" class="btn btn-success" [disabled]="!ajoutForm.valid" (click)="editSubmit()">Modifier</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Suppression -->
+<div id="removeModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation suppression</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="!modeFinish" class="row text-center">
+          <div class="col">
+            <button type="button" class="btn btn-primary btn-block" (click)="modeFinish = true">Flemmardise</button>
+          </div>
+          <div class="col">
+            <button type="button" class="btn btn-success btn-block" (click)="modeFinish = true">Bien Terminée</button>
+          </div>
+        </div>
+
+        <div *ngIf="modeFinish" class="row">
+          <div class="col">
+            <button type="button" class="btn btn-secondary btn-sm mb-1" (click)="modeFinish = false">Retour</button>
+            <button type="button" class="btn btn-success btn-block" (click)="removeSubmit()">Terminer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
